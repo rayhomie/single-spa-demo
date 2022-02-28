@@ -8,7 +8,7 @@ import singleSpaReact from 'single-spa-react';
 const reactLifecycles = singleSpaReact({
   React,
   ReactDOM,
-  App,
+  rootComponent: App,
   errorBoundary(err, info, props) {
     // https://reactjs.org/docs/error-boundaries.html
     return <div>This renders when a catastrophic error occurs</div>;

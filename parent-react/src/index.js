@@ -1,12 +1,32 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { BrowserRouter as Router, Routes, Link, Route } from 'react-router-dom';
+import { registerApplication, start } from 'single-spa';
 import './index.css';
 import App from './App';
+import Blog from './Blog';
 import reportWebVitals from './reportWebVitals';
+
+registerApplication(
+  'childApp',
+  async () => {
+    // systemJS
+    console.log('加载子应用');
+  },
+  location => location.pathname.startsWith('/childApp')
+);
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <Router>
+      <Link to='/'>app</Link>
+      <Link to='/blog'>blog</Link>
+      <Link to='/childApp'>childApp</Link>
+      <Routes>
+        <Route exact path='/' element={<App />}></Route>
+        <Route path='/blog' element={<Blog />}></Route>
+      </Routes>
+    </Router>
   </React.StrictMode>,
   document.getElementById('root')
 );
