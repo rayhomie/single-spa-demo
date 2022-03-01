@@ -24,10 +24,10 @@ registerApplication(
     // systemJS
     console.log('加载子应用');
     // 加载umd模块singleReact
-    await loadScript('//localhost:3001/static/js/bundle.js');
-    return window.singleReact;
+    await loadScript('//localhost:3001/static/js/bundle.js'); // 用于加载子应用代码，最终会暴露出生命周期
+    return window.singleReact; // 将生命周期函数return出去，主应用才可以调用子应用生命周期 bootstrap mount unmount
   },
-  location => location.pathname.startsWith('/childApp') // 匹配路径的函数
+  location => location.pathname.startsWith('/childApp') // 匹配对应路径让主应用去掉子应用暴露出来的生命周期，并加载子应用
 );
 
 // 必须执行这个
