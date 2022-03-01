@@ -7,11 +7,20 @@ import App from './App';
 import Blog from './Blog';
 import reportWebVitals from './reportWebVitals';
 
+function loadScript(url) {
+  const script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src = url;
+  console.log(document.body);
+  document.body.appendChild(script);
+}
+
 registerApplication(
   'childApp',
   async () => {
     // systemJS
     console.log('加载子应用');
+    loadScript('//localhost:3000/static/js/bundle.js');
   },
   location => location.pathname.startsWith('/childApp')
 );
