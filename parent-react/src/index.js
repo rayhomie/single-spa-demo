@@ -5,25 +5,33 @@ import { registerApplication, start } from 'single-spa';
 import './index.css';
 import App from './App';
 import Blog from './Blog';
-import reportWebVitals from './reportWebVitals';
 
-function loadScript(url) {
-  const script = document.createElement('script');
-  script.type = 'text/javascript';
-  script.src = url;
-  console.log(document.body);
-  document.body.appendChild(script);
+async function loadScript(url) {
+  return new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = url;
+    script.onload = resolve;
+    script.onerror = reject;
+    document.head.appendChild(script);
+  });
 }
 
+// 主应用中注册子应用
 registerApplication(
-  'childApp',
+  'childApp', // childname
   async () => {
+    // 加载子应用：这里通过加载webpack打包的umd模块的react代码，再return出子应用的生命周期
     // systemJS
     console.log('加载子应用');
-    loadScript('//localhost:3000/static/js/bundle.js');
+    // 加载umd模块singleReact
+    await loadScript('//localhost:3001/static/js/bundle.js');
+    return window.singleReact;
   },
-  location => location.pathname.startsWith('/childApp')
+  location => location.pathname.startsWith('/childApp') // 匹配路径的函数
 );
+
+// 必须执行这个
+start();
 
 ReactDOM.render(
   <React.StrictMode>
@@ -39,8 +47,3 @@ ReactDOM.render(
   </React.StrictMode>,
   document.getElementById('root')
 );
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
