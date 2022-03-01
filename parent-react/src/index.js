@@ -20,6 +20,7 @@ async function loadScript(url) {
 registerApplication(
   'childApp', // childname
   async () => {
+    // 该函数在匹配到路由的时候被调用
     // 加载子应用：这里通过加载webpack打包的umd模块的react代码，再return出子应用的生命周期
     // systemJS
     console.log('加载子应用');
