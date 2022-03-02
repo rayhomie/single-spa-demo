@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>快照沙箱实现</title>
+</head>
+<script>
+
+  class SnapshotSandBox{
+    constructor(){
+      this.proxy = window;
+      this.modifyPropsMap = {};
+      this.active();
+    }
+    active(){
+      // 激活时创建window快照
+      this.windowSnapshot = {};
+      for(const prop in window){
+        if(window.hasOwnProperty(prop)){
+          this.windowSnapshot[prop] = window[prop];
+        }
+      }
+      // 将上次的变化应用到当前的window上
+      Object.keys(this.modifyPropsMap).forEach(p => {
+        window[p] = this.modifyPropsMap[p];
+      })
+    }
+    inActive(){
+      // 失活时，记录变化，并变为快照
+      for(const prop in window){
+        if(window.hasOwnProperty(prop)){
+          if(this.windowSnapshot[prop] !== window[prop]){
+            this.modifyPropsMap[prop] = window[prop];
+            window[prop] = this.windowSnapshot[prop];
+         };
+        }
+      }
+    }
+  }
+
+  const sandbox = new SnapshotSandBox();
+  ((window) => {
+    window.a = 1;
+    window.b = 2;
+    console.log(window.a,window.b);
+    sandbox.inActive();
+    console.log(window.a,window.b);
+    sandbox.active();
+    console.log(window.a,window.b);
+  })(sandbox.proxy)
+
+</script>
+</html>
